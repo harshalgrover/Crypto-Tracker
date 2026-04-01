@@ -1,0 +1,77 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+body {
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+  transition: 0.3s;
+}
+body.light-mode {
+  background: #f4f6f9;
+  color: #111;
+}
+#crypto-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 14px;
+  text-align: center;
+  transition: 0.3s;
+  cursor: pointer;
+}
+body.light-mode .card {
+  background: white;
+  color: #111;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.card img {
+  margin-bottom: 10px;
+}
+.card h2 {
+  margin: 10px 0;
+  font-size: 18px;
+}
+.card p {
+  font-size: 14px;
+}
+#theme-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #3b82f6;
+  color: white;
+}
+#pagination {
+  text-align: center;
+  margin-top: 40px;
+}
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+button:hover {
+  opacity: 0.85;
+}
+button:disabled {
+  background: gray;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
