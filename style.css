@@ -1,77 +1,109 @@
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
+
 body {
-  background: #0f172a;
-  color: white;
+  background: #f4f6f9;
+  color: #111;
   padding: 20px;
   transition: 0.3s;
 }
-body.light-mode {
-  background: #f4f6f9;
-  color: #111;
+
+body.dark-mode {
+  background: #0f172a;
+  color: white;
 }
-#crypto-container {
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+input, select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  color: black;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+  background: #1e293b;
+  color: white;
+  border: 1px solid #334155;
+}
+
+.cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 20px;
 }
+
 .card {
-  background: #1e293b;
+  background: white;
   padding: 20px;
   border-radius: 14px;
   text-align: center;
   transition: 0.3s;
-  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-body.light-mode .card {
-  background: white;
-  color: #111;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+body.dark-mode .card {
+  background: #1e293b;
+  color: white;
 }
+
 .card:hover {
   transform: translateY(-5px);
 }
+
 .card img {
+  width: 60px;
   margin-bottom: 10px;
 }
-.card h2 {
+
+.card h3 {
+  font-size: 16px;
   margin: 10px 0;
-  font-size: 18px;
 }
+
 .card p {
   font-size: 14px;
 }
-#theme-btn {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #3b82f6;
-  color: white;
-}
-#pagination {
-  text-align: center;
-  margin-top: 40px;
-}
-button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  background: #3b82f6;
-  color: white;
-  cursor: pointer;
+
+.positive {
+  color: green;
   font-weight: bold;
 }
+
+.negative {
+  color: red;
+  font-weight: bold;
+}
+
+button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+}
+
 button:hover {
   opacity: 0.85;
-}
-button:disabled {
-  background: gray;
-  cursor: not-allowed;
-  opacity: 0.6;
 }

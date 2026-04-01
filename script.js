@@ -1,107 +1,99 @@
 const container = document.getElementById("crypto-container");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
-const pageNum = document.getElementById("page-num");
-const themeBtn = document.getElementById("theme-btn");
 
-let coinsData = [];
-let currentPage = 1;
-const ITEMS_PER_PAGE = 30;
+let allCoins = [];
 
-themeBtn.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
+async function loadCoins() {
+  container.innerHTML = "Loading...";
 
-  if (document.body.classList.contains("light-mode")) {
-    themeBtn.textContent = "🌙 Dark Mode";
-  } else {
-    themeBtn.textContent = "☀️ Light Mode";
-  }
-});
-
-async function fetchCoins() {
   try {
     const res = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=150&page=1"
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=45&page=1&sparkline=false"
     );
 
-    if (!res.ok) throw new Error("API error");
+    if (!res.ok) throw new Error();
 
     const data = await res.json();
 
-    if (!Array.isArray(data) || data.length === 0) {
-      throw new Error("Invalid data");
-    }
+    allCoins = data;
+    renderCoins(allCoins);
 
-    coinsData = data;
-    updateUI();
-
-  } catch (err) {
-    console.warn("API failed → using fallback");
-
-    coinsData = [
-      { name: "Bitcoin", current_price: 68000, market_cap: 1300000000000, image: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png" },
-      { name: "Ethereum", current_price: 3800, market_cap: 450000000000, image: "https://assets.coingecko.com/coins/images/279/large/ethereum.png" },
-      { name: "Solana", current_price: 150, market_cap: 65000000000, image: "https://assets.coingecko.com/coins/images/4128/large/solana.png" },
-
-      ...Array.from({ length: 100 }, (_, i) => ({
-        name: `Demo Coin ${i + 1}`,
-        current_price: Math.floor(Math.random() * 1000),
-        market_cap: Math.floor(Math.random() * 1000000000),
-        image: "https://via.placeholder.com/50"
-      }))
-    ];
-
-    updateUI();
+  } catch {
+    container.innerHTML = "Error loading data";
   }
 }
 
+function createCard(coin) {
+  const card = document.createElement("div");
+  card.className = "card";
 
-function displayCoins(data) {
+  const changeClass =
+    coin.price_change_percentage_24h >= 0 ? "positive" : "negative";
+
+  card.innerHTML = `
+    <img src="${coin.image}">
+    <h3>${coin.name} (${coin.symbol.toUpperCase()})</h3>
+    <p>$${coin.current_price}</p>
+    <p>Market Cap: $${coin.market_cap.toLocaleString()}</p>
+    <p class="${changeClass}">
+      ${coin.price_change_percentage_24h.toFixed(2)}%
+    </p>
+  `;
+
+  return card;
+}
+
+function renderCoins(coins) {
   container.innerHTML = "";
 
-  data.forEach(coin => {
-    const card = document.createElement("div");
-    card.classList.add("card");
+  if (coins.length === 0) {
+    container.innerHTML = "No results";
+    return;
+  }
 
-    card.innerHTML = `
-      <img src="${coin.image}" width="50">
-      <h2>${coin.name}</h2>
-      <p>💰 $${coin.current_price}</p>
-      <p>📊 $${coin.market_cap}</p>
-    `;
-
-    container.appendChild(card);
+  coins.forEach(coin => {
+    container.appendChild(createCard(coin));
   });
 }
 
+document.getElementById("search").addEventListener("input", () => {
+  const value = document.getElementById("search").value.toLowerCase();
 
-function updateUI() {
-  const totalPages = Math.ceil(coinsData.length / ITEMS_PER_PAGE);
+  const filtered = allCoins.filter(coin =>
+    coin.name.toLowerCase().includes(value) ||
+    coin.symbol.toLowerCase().includes(value)
+  );
 
-  const start = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedItems = coinsData.slice(start, start + ITEMS_PER_PAGE);
-
-  displayCoins(paginatedItems);
-
-  pageNum.innerText = `${currentPage} / ${totalPages}`;
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = currentPage === totalPages;
-}
-
-
-prevBtn.addEventListener("click", () => {
-  if (currentPage > 1) {
-    currentPage--;
-    updateUI();
-  }
+  renderCoins(filtered);
 });
 
-nextBtn.addEventListener("click", () => {
-  if (currentPage < Math.ceil(coinsData.length / ITEMS_PER_PAGE)) {
-    currentPage++;
-    updateUI();
+document.getElementById("sort").addEventListener("change", () => {
+  const sort = document.getElementById("sort").value;
+
+  let sorted = [...allCoins];
+
+  if (sort === "price-high") {
+    sorted.sort((a, b) => b.current_price - a.current_price);
+  } else if (sort === "price-low") {
+    sorted.sort((a, b) => a.current_price - b.current_price);
+  } else if (sort === "market-high") {
+    sorted.sort((a, b) => b.market_cap - a.market_cap);
+  } else if (sort === "gainers") {
+    sorted.sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
+  } else if (sort === "losers") {
+    sorted.sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h);
   }
+
+  renderCoins(sorted);
 });
 
+const themeBtn = document.getElementById("theme-btn");
 
-fetchCoins();
+themeBtn.onclick = () => {
+  document.body.classList.toggle("dark-mode");
+
+  themeBtn.innerText = document.body.classList.contains("dark-mode")
+    ? "☀️ Light Mode"
+    : "🌙 Dark Mode";
+};
+
+loadCoins();
