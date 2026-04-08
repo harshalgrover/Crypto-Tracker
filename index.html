@@ -9,21 +9,31 @@
 
   <div class="header">
     <h1>🚀 Crypto Tracker</h1>
-    <button id="theme-btn">🌙 Dark Mode</button>
+    <div>
+      <a href="favorites.html"><button>⭐ Favorites</button></a>
+      <button id="theme-btn">🌙 Dark Mode</button>
+    </div>
   </div>
 
   <div class="filters">
-    <input type="text" id="search" placeholder="Search crypto...">
+    <select id="filter">
+      <option value="">Select Filter</option>
+      <option value="cheap">Price < 100</option>
+      <option value="expensive">Price > 1000</option>
+      <option value="market">High Market Cap</option>
+      <option value="gainers">Top Gainers</option>
+      <option value="losers">Top Losers</option>
+    </select>
 
     <select id="sort">
       <option value="">Sort By</option>
-      <option value="price-high">Price: High → Low</option>
-      <option value="price-low">Price: Low → High</option>
-      <option value="market-high">Market Cap: High → Low</option>
-      <option value="gainers">Top Gainers (24h)</option>
-      <option value="losers">Top Losers (24h)</option>
+      <option value="price-high">Price High → Low</option>
+      <option value="price-low">Price Low → High</option>
+      <option value="market-high">Market Cap High → Low</option>
     </select>
   </div>
+
+  <input type="text" id="search" placeholder="Search crypto...">
 
   <div id="crypto-container" class="cards"></div>
 

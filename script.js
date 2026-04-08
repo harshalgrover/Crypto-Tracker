@@ -1,6 +1,7 @@
 const container = document.getElementById("crypto-container");
 
 let allCoins = [];
+let currentCoins = [];
 
 async function loadCoins() {
   container.innerHTML = "Loading...";
@@ -10,19 +11,45 @@ async function loadCoins() {
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=45&page=1&sparkline=false"
     );
 
-    if (!res.ok) throw new Error();
-
     const data = await res.json();
 
     allCoins = data;
-    renderCoins(allCoins);
+    currentCoins = data;
+
+    renderCoins(currentCoins);
 
   } catch {
     container.innerHTML = "Error loading data";
   }
 }
 
+function getFav() {
+  return JSON.parse(localStorage.getItem("fav")) || [];
+}
+
+function saveFav(data) {
+  localStorage.setItem("fav", JSON.stringify(data));
+}
+
+function toggleFav(coin) {
+  let fav = getFav();
+
+  const exists = fav.find(c => c.id === coin.id);
+
+  if (exists) {
+    fav = fav.filter(c => c.id !== coin.id);
+  } else {
+    fav.push(coin);
+  }
+
+  saveFav(fav);
+  renderCoins(currentCoins);
+}
+
 function createCard(coin) {
+  const fav = getFav();
+  const isFav = fav.find(c => c.id === coin.id);
+
   const card = document.createElement("div");
   card.className = "card";
 
@@ -30,6 +57,7 @@ function createCard(coin) {
     coin.price_change_percentage_24h >= 0 ? "positive" : "negative";
 
   card.innerHTML = `
+    <div class="star">${isFav ? "⭐" : "☆"}</div>
     <img src="${coin.image}">
     <h3>${coin.name} (${coin.symbol.toUpperCase()})</h3>
     <p>$${coin.current_price}</p>
@@ -38,6 +66,8 @@ function createCard(coin) {
       ${coin.price_change_percentage_24h.toFixed(2)}%
     </p>
   `;
+
+  card.querySelector(".star").onclick = () => toggleFav(coin);
 
   return card;
 }
@@ -55,21 +85,45 @@ function renderCoins(coins) {
   });
 }
 
+/* SEARCH */
 document.getElementById("search").addEventListener("input", () => {
   const value = document.getElementById("search").value.toLowerCase();
 
-  const filtered = allCoins.filter(coin =>
+  currentCoins = allCoins.filter(coin =>
     coin.name.toLowerCase().includes(value) ||
     coin.symbol.toLowerCase().includes(value)
   );
 
-  renderCoins(filtered);
+  renderCoins(currentCoins);
 });
 
+/* FILTER */
+document.getElementById("filter").addEventListener("change", () => {
+  const type = document.getElementById("filter").value;
+
+  let filtered = [...allCoins];
+
+  if (type === "cheap") {
+    filtered = filtered.filter(c => c.current_price < 100);
+  } else if (type === "expensive") {
+    filtered = filtered.filter(c => c.current_price > 1000);
+  } else if (type === "market") {
+    filtered.sort((a, b) => b.market_cap - a.market_cap);
+  } else if (type === "gainers") {
+    filtered.sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
+  } else if (type === "losers") {
+    filtered.sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h);
+  }
+
+  currentCoins = filtered;
+  renderCoins(currentCoins);
+});
+
+/* SORT */
 document.getElementById("sort").addEventListener("change", () => {
   const sort = document.getElementById("sort").value;
 
-  let sorted = [...allCoins];
+  let sorted = [...currentCoins];
 
   if (sort === "price-high") {
     sorted.sort((a, b) => b.current_price - a.current_price);
@@ -77,13 +131,10 @@ document.getElementById("sort").addEventListener("change", () => {
     sorted.sort((a, b) => a.current_price - b.current_price);
   } else if (sort === "market-high") {
     sorted.sort((a, b) => b.market_cap - a.market_cap);
-  } else if (sort === "gainers") {
-    sorted.sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
-  } else if (sort === "losers") {
-    sorted.sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h);
   }
 
-  renderCoins(sorted);
+  currentCoins = sorted;
+  renderCoins(currentCoins);
 });
 
 const themeBtn = document.getElementById("theme-btn");
