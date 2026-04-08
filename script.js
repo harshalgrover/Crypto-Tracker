@@ -85,7 +85,6 @@ function renderCoins(coins) {
   });
 }
 
-/* SEARCH */
 document.getElementById("search").addEventListener("input", () => {
   const value = document.getElementById("search").value.toLowerCase();
 
@@ -97,7 +96,6 @@ document.getElementById("search").addEventListener("input", () => {
   renderCoins(currentCoins);
 });
 
-/* FILTER */
 document.getElementById("filter").addEventListener("change", () => {
   const type = document.getElementById("filter").value;
 
@@ -119,7 +117,6 @@ document.getElementById("filter").addEventListener("change", () => {
   renderCoins(currentCoins);
 });
 
-/* SORT */
 document.getElementById("sort").addEventListener("change", () => {
   const sort = document.getElementById("sort").value;
 
