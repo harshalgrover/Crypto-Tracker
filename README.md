@@ -1,35 +1,35 @@
-# 🚀 Crypto Tracker Web App
+# 🚀 Crypto Tracker
 
-## 📌 Project Overview
-
-This is a simple and responsive **Crypto Tracker Web Application** built using **HTML, CSS, and JavaScript**. It fetches real-time cryptocurrency data using a public API and allows users to search, filter, and sort coins easily.
+A simple and interactive Crypto Tracker web app that allows users to view live cryptocurrency data, search coins, sort them, apply filters, and mark favorites.
 
 ---
 
 ## ✨ Features
 
-* 🔄 Fetch live cryptocurrency data using **Fetch API**
-* 🔍 Search coins by name
-* 🔽 Sort by:
+* 🔍 Search cryptocurrencies by name or symbol
+* 📊 Sort coins by:
 
-  * Price
-  * Market Capitalization
-* 🎯 Filter:
+  * Price (High → Low / Low → High)
+  * Market Cap
+* 🎛️ Filter coins:
 
-  * View all coins
-  * View top 10 coins
-* 🎨 Modern UI with glassmorphism design
-* ⚡ Fast and responsive interface
+  * Cheap coins (< $100)
+  * Expensive coins (> $1000)
+  * High market cap
+  * Top gainers / losers
+* ⭐ Add/remove coins to Favorites
+* ⭐ Favorites stored using localStorage
+* 🌙 Dark mode toggle
+* 📱 Responsive design
 
 ---
 
-## 🛠️ Technologies Used
+## 🛠️ Tech Stack
 
-* HTML5
-* CSS3
-* JavaScript (ES6)
-* Fetch API
-* CoinGecko Public API
+* HTML
+* CSS
+* JavaScript (Vanilla JS)
+* CoinGecko API
 
 ---
 
@@ -39,20 +39,36 @@ This is a simple and responsive **Crypto Tracker Web Application** built using *
 crypto-tracker/
 │
 ├── index.html
+├── favorites.html
 ├── style.css
 ├── script.js
-└── README.md
+└── favorites.js
 ```
 
 ---
 
-## ⚙️ How It Works
+## ⚙️ How to Run
 
-1. The app fetches cryptocurrency data from the CoinGecko API.
-2. Data is stored in a JavaScript array.
-3. Users can:
+1. Download or clone the repository
+2. Open the folder in VS Code
+3. Install **Live Server** extension
+4. Right-click `index.html` → Open with Live Server
 
-   * Search coins using the input field
-   * Sort coins using dropdown options
-   * Filter coins (Top 10 / All)
-4. The UI updates dynamically based on user actions.
+---
+
+## 🌐 API Used
+
+* CoinGecko API
+  https://www.coingecko.com/en/api
+
+---
+
+## 💡 How It Works
+
+* Data is fetched from CoinGecko API
+* Coins are rendered dynamically using JavaScript
+* Favorites are stored in browser localStorage
+* Filtering, sorting, and searching are handled on the frontend
+
+---
+
