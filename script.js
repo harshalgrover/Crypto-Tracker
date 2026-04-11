@@ -8,8 +8,16 @@ async function loadCoins() {
 
   try {
     const res = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=45&page=1&sparkline=false"
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=45&page=1&sparkline=false",
+      {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        }
+      }
     );
+
+    if (!res.ok) throw new Error("API Error");
 
     const data = await res.json();
 
@@ -18,7 +26,8 @@ async function loadCoins() {
 
     renderCoins(currentCoins);
 
-  } catch {
+  } catch (err) {
+    console.log(err);
     container.innerHTML = "Error loading data";
   }
 }
@@ -60,10 +69,10 @@ function createCard(coin) {
     <div class="star">${isFav ? "⭐" : "☆"}</div>
     <img src="${coin.image}">
     <h3>${coin.name} (${coin.symbol.toUpperCase()})</h3>
-    <p>$${coin.current_price}</p>
-    <p>Market Cap: $${coin.market_cap.toLocaleString()}</p>
+    <p>$${coin.current_price ?? "N/A"}</p>
+    <p>Market Cap: $${coin.market_cap ? coin.market_cap.toLocaleString() : "N/A"}</p>
     <p class="${changeClass}">
-      ${coin.price_change_percentage_24h.toFixed(2)}%
+      ${coin.price_change_percentage_24h ? coin.price_change_percentage_24h.toFixed(2) : "0.00"}%
     </p>
   `;
 
@@ -75,7 +84,7 @@ function createCard(coin) {
 function renderCoins(coins) {
   container.innerHTML = "";
 
-  if (coins.length === 0) {
+  if (!coins || coins.length === 0) {
     container.innerHTML = "No results";
     return;
   }
